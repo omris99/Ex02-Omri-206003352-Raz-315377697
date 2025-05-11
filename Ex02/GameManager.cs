@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,29 +9,61 @@ namespace Ex02
 {
     internal class GameManager
     {
-        private int m_MaximalNumberOfGuesses;
+        public int MaximalNumberOfGuesses { get; set; } //public data member --> check if it legit
         private String m_SecretWord;
-        //private Guess List priviousGuesses
+        private readonly int r_SecretWordLength = 4;
 
         public void SetMaximalNumberOfGuesses(int i_MaximalNumberOfGuesses)
         {
-            m_MaximalNumberOfGuesses = i_MaximalNumberOfGuesses;
+            MaximalNumberOfGuesses = i_MaximalNumberOfGuesses;
         }
 
-        public bool IsVictory()
-        {
-            //
-        }
+        //public bool IsVictory()
+        //{
+        //    //
+        //}
 
         public void GenerateSecretWord()
         {
-            //generate secret word to guess
-            //use NEXT method of Random library
+            Random random = new Random();
+            char currentLetter;
+            List<char> usedLetters = new List<char>();
+
+            for(int i = 0; i < r_SecretWordLength; i++)
+            {
+                currentLetter = (char)random.Next('A', 'H' + 1);
+                foreach(char c in usedLetters)
+                {
+                    if(c == currentLetter)
+                    {
+                        i--;
+                        break;
+                    }
+                }
+                m_SecretWord.Append(currentLetter);
+                usedLetters.Add(currentLetter);
+            }
         }
 
-        public void checkGuess(String i_Guess)
+
+        public Guess ProccesGuessAndGiveFeedback(String i_UserInputGuess)
         {
-            //
+            Guess guess = new Guess();
+
+            guess.UserGuess = i_UserInputGuess;
+            if(guess.UserGuess != null)
+            {
+                //Give Feedback to GuessFeedBack;
+
+            }
+
+            return guess;
+        }
+
+        private void giveFeedbackToGuess(Guess i_Guess)
+        {
+
+
         }
 
     }

@@ -27,11 +27,20 @@ namespace Ex02
             while (true)
             {
                 int maximalNumberOfGuesses = ui.GetMaximalNumberOfGuessesFromUser();
-                gameManager.SetMaximalNumberOfGuesses(maximalNumberOfGuesses);
-                ui.PrintScreen();
-                ui.GetGuessFromUser();
-            }
-            
+                gameManager.MaximalNumberOfGuesses = maximalNumberOfGuesses;
+                ui.PrintScreen(maximalNumberOfGuesses);
+                String userGuessInput = ui.GetGuessFromUser();
+                Guess currentGuess = gameManager.ProccesGuessAndGiveFeedback(userGuessInput);
+                if(currentGuess.UserGuess == null)
+                {
+                    Console.WriteLine("Try Again");
+                }
+                else
+                {
+                    //ui.AddToGuessList(currentGuess);
+                }
+            }            
+
         }
 
     }
