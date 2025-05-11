@@ -40,6 +40,7 @@
     <Compile Include="Guess.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="UserInterface.cs" />
+    <Compile Include="Utillities.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Ex02.ConsoleUtils">

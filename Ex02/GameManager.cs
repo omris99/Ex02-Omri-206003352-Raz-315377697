@@ -9,13 +9,31 @@ namespace Ex02
 {
     internal class GameManager
     {
-        public int MaximalNumberOfGuesses { get; set; } //public data member --> check if it legit
-        private String m_SecretWord;
+        private String m_SecretWord = "";
         private readonly int r_SecretWordLength = 4;
+        private int m_MaximalNumberOfGuesses = -1;
+        private int r_MinimumNumberOfGuessesAllowed = 4;
+        private int r_MaximumNumberOfGuessesAllowed = 10;
 
-        public void SetMaximalNumberOfGuesses(int i_MaximalNumberOfGuesses)
+        public int MaximalNumberOfGuesses
         {
-            MaximalNumberOfGuesses = i_MaximalNumberOfGuesses;
+            get
+            {
+                return m_MaximalNumberOfGuesses;
+            }
+            set
+            {
+                if (value >= r_MinimumNumberOfGuessesAllowed && value <= r_MaximumNumberOfGuessesAllowed)
+                {
+                    m_MaximalNumberOfGuesses = value;
+                }
+                else
+                {
+                    Console.WriteLine($"Invalid Input. Please Enter a number in range." +
+                        $" ({r_MinimumNumberOfGuessesAllowed}-{r_MaximumNumberOfGuessesAllowed})" +
+                        $"{Environment.NewLine}");
+                }
+            }
         }
 
         //public bool IsVictory()
@@ -27,22 +45,21 @@ namespace Ex02
         {
             Random random = new Random();
             char currentLetter;
-            List<char> usedLetters = new List<char>();
+            StringBuilder secretWord = new StringBuilder();
 
             for(int i = 0; i < r_SecretWordLength; i++)
             {
                 currentLetter = (char)random.Next('A', 'H' + 1);
-                foreach(char c in usedLetters)
+                if(Utillities.CheckIfLetterExistInString(secretWord.ToString(), currentLetter))
                 {
-                    if(c == currentLetter)
-                    {
-                        i--;
-                        break;
-                    }
+                    i--;
                 }
-                m_SecretWord.Append(currentLetter);
-                usedLetters.Add(currentLetter);
+                else
+                {
+                    secretWord.Append(currentLetter);
+                }
             }
+            m_SecretWord = secretWord.ToString();
         }
 
 
@@ -50,20 +67,55 @@ namespace Ex02
         {
             Guess guess = new Guess();
 
-            guess.UserGuess = i_UserInputGuess;
-            if(guess.UserGuess != null)
+            if (checkGuessValidation(i_UserInputGuess))
             {
-                //Give Feedback to GuessFeedBack;
+                StringBuilder vString = new StringBuilder();
+                StringBuilder xString = new StringBuilder();
+                StringBuilder feedBack = new StringBuilder();
 
+                guess.UserGuess = i_UserInputGuess;
+                for (int i = 0; i < r_SecretWordLength; i++)
+                {
+                    if (guess.UserGuess[i] == m_SecretWord[i])
+                    {
+                        vString.Append('V');
+                    }
+                    else if (Utillities.CheckIfLetterExistInString(m_SecretWord, guess.UserGuess[i]))
+                    {
+                        xString.Append('X');
+                    }
+                }
+
+                feedBack.Append(vString);
+                feedBack.Append(xString);
+                guess.GuessFeedBack = feedBack.ToString();
             }
 
             return guess;
         }
 
-        private void giveFeedbackToGuess(Guess i_Guess)
+        private bool checkGuessValidation(String i_UserGuessInput)
         {
+            bool isValid = true;
 
+            if (i_UserGuessInput.Length != r_SecretWordLength)
+            {
+                isValid = false;
+            }
+            else
+            {
+                foreach (char letter in i_UserGuessInput)
+                {
+                    if (letter < 'A' || letter > 'H')
+                    {
+                        isValid = false;
+                        Console.WriteLine("Invalid!");
+                        break;
+                    }
+                }
+            }
 
+            return isValid;
         }
 
     }

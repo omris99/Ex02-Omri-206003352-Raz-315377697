@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 //TODO:
 //1. TO THINK ABOUT ACCESS MODIFIERS OF CLASSES
-//2. Create Guess Class with feedback and guess fields
+//2. isVictory in GameManager -- Raz
+//3. check if user want to exit -- Raz
+//4. UI SHIT (LIKE FORMAT GUESSES TO FIT IN TABLE, OR LOST MESSAGE) -- OMRI
+
 
 
 
@@ -26,18 +29,27 @@ namespace Ex02
 
             while (true)
             {
-                int maximalNumberOfGuesses = ui.GetMaximalNumberOfGuessesFromUser();
-                gameManager.MaximalNumberOfGuesses = maximalNumberOfGuesses;
-                ui.PrintScreen(maximalNumberOfGuesses);
-                String userGuessInput = ui.GetGuessFromUser();
-                Guess currentGuess = gameManager.ProccesGuessAndGiveFeedback(userGuessInput);
-                if(currentGuess.UserGuess == null)
+                while(gameManager.MaximalNumberOfGuesses == -1)
                 {
-                    Console.WriteLine("Try Again");
+                    int maximalNumberOfGuesses = ui.GetMaximalNumberOfGuessesFromUser();
+                    gameManager.MaximalNumberOfGuesses = maximalNumberOfGuesses;
                 }
-                else
+
+                gameManager.GenerateSecretWord();
+                for(int i = 0; i < gameManager.MaximalNumberOfGuesses; i++)
                 {
-                    //ui.AddToGuessList(currentGuess);
+                    ui.PrintScreen(gameManager.MaximalNumberOfGuesses);
+                    String userGuessInput = ui.GetGuessFromUser();
+                    Guess currentGuess = gameManager.ProccesGuessAndGiveFeedback(userGuessInput);
+                    if (currentGuess.UserGuess == null)
+                    {
+                        Console.WriteLine("Try Again!");
+                        //IMPLEMENT SOMETHING THAT GIVES USER TO TRY AGAIN BEFORE CLEAN SCREEN
+                    }
+                    else
+                    {
+                        ui.AddGuessToGuessesList(currentGuess);
+                    }
                 }
             }            
 

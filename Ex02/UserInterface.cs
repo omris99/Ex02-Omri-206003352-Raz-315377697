@@ -8,7 +8,7 @@ namespace Ex02
 {
     internal class UserInterface
     {
-        private List<Guess> m_ListOfGuessesMadeSoFar;
+        private List<Guess> m_ListOfGuessesMadeSoFar = new List<Guess>();
         private string m_UserInput;
         private readonly int r_TableRightSideWidth = 9;
         private readonly int r_TableLeftSideWidth = 7;
@@ -40,15 +40,13 @@ namespace Ex02
         {
             int maximalNumberOfGuessesFromUser;
 
-            Console.WriteLine("Hello! Please enter desired maximal number of guesses (4-10): ");
+            Console.WriteLine("Hello! Please enter desired maximal number of guesses: ");
             m_UserInput = Console.ReadLine();
-            if(!(int.TryParse(m_UserInput, out maximalNumberOfGuessesFromUser)))
+            while(!(int.TryParse(m_UserInput, out maximalNumberOfGuessesFromUser)))
             {
-                Console.WriteLine("Invalid Input! it isn't a number. Try Again: ");
-            }
-            else if(maximalNumberOfGuessesFromUser < 4 || maximalNumberOfGuessesFromUser > 10)
-            {
-                Console.WriteLine("Invalid Input! number isn't in the range (4-10). Try Again: ");
+                Console.WriteLine($"Invalid Input! it isn't a number.{Environment.NewLine}");
+                Console.WriteLine("Hello! Please enter desired maximal number of guesses (4-10): ");
+                m_UserInput = Console.ReadLine();
             }
 
             return maximalNumberOfGuessesFromUser;
@@ -59,11 +57,19 @@ namespace Ex02
         {
             //DIVIDE TO STATES : FOR EXAMPLE STATE0 IS THE INITIAL SCREEN
             //STATE 0 : INITIAL SCREEN
+            int countOfGuessesMadeSoFar = m_ListOfGuessesMadeSoFar.Count;
+
             ConsoleUtils.Screen.Clear();
             Console.WriteLine($"Current board status:{Environment.NewLine}");
             printTableRow("Pins:", "Result:");
             printTableRow(" # # # #", " ");
-            for (int i = 0; i < maximalNumberOfGuesses; i++)
+            for (int i = 0; i < countOfGuessesMadeSoFar; i++)
+            {
+                Guess currentGuess = m_ListOfGuessesMadeSoFar[i];
+                printTableRow(currentGuess.UserGuess, currentGuess.GuessFeedBack);
+            }
+
+            for (int i = 0; i < (maximalNumberOfGuesses - countOfGuessesMadeSoFar); i++)
             {
                 printTableRow();
             }
@@ -76,6 +82,11 @@ namespace Ex02
             Console.WriteLine("Please type your next guess <A B C D> or 'Q' to quit");
             m_UserInput = Console.ReadLine();
             return m_UserInput;
+        }
+
+        public void AddGuessToGuessesList(Guess i_Guess)
+        {
+            m_ListOfGuessesMadeSoFar.Add(i_Guess);
         }
 
         //public bool CheckIfUserWantToQuitGame(String i_UserInput)
