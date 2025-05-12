@@ -15,33 +15,14 @@ namespace Ex02
         private int r_MinimumNumberOfGuessesAllowed = 4;
         private int r_MaximumNumberOfGuessesAllowed = 10;
 
-        public int MaximalNumberOfGuesses
-        {
-            get
-            {
-                return m_MaximalNumberOfGuesses;
-            }
-            set
-            {
-                if (value >= r_MinimumNumberOfGuessesAllowed && value <= r_MaximumNumberOfGuessesAllowed)
-                {
-                    m_MaximalNumberOfGuesses = value;
-                }
-                else
-                {
-                    Console.WriteLine($"Invalid Input. Please Enter a number in range." +
-                        $" ({r_MinimumNumberOfGuessesAllowed}-{r_MaximumNumberOfGuessesAllowed})" +
-                        $"{Environment.NewLine}");
-                }
-            }
-        }
+        public int MaximalNumberOfGuesses { get; set; }
 
         //public bool IsVictory()
         //{
         //    //
         //}
 
-        public void GenerateSecretWord()
+        public String GenerateSecretWord()
         {
             Random random = new Random();
             char currentLetter;
@@ -60,6 +41,8 @@ namespace Ex02
                 }
             }
             m_SecretWord = secretWord.ToString();
+
+            return m_SecretWord;
         }
 
 
@@ -96,6 +79,7 @@ namespace Ex02
 
         private bool checkGuessValidation(String i_UserGuessInput)
         {
+            Dictionary<char, bool> lettersExistInUserGuess = new Dictionary<char, bool>();
             bool isValid = true;
 
             if (i_UserGuessInput.Length != r_SecretWordLength)
@@ -106,17 +90,22 @@ namespace Ex02
             {
                 foreach (char letter in i_UserGuessInput)
                 {
-                    if (letter < 'A' || letter > 'H')
+                    if ((letter < 'A' || letter > 'H') || (lettersExistInUserGuess.ContainsKey(letter)))
                     {
                         isValid = false;
-                        Console.WriteLine("Invalid!");
                         break;
                     }
+
+                    lettersExistInUserGuess.Add(letter, true);
                 }
             }
 
             return isValid;
         }
 
+        public void ResetMembers()
+        {
+            m_MaximalNumberOfGuesses = -1;
+        }
     }
 }

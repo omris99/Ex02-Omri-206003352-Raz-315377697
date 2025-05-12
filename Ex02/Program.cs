@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ex02;
 
 //TODO:
 //1. TO THINK ABOUT ACCESS MODIFIERS OF CLASSES
@@ -15,45 +16,85 @@ using System.Threading.Tasks;
 
 namespace Ex02
 {
-    public class Program //maybe to change public to internal
+    internal class Program //maybe to change public to internal
     {
+        UserInterface m_Ui = new UserInterface();
+        GameManager m_GameManager = new GameManager();
+
+
         public static void Main()
         {
-            RunGame();
+            Program program = new Program();
+            program.RunGame();
         }
 
-        private static void RunGame()
+        private void RunGame()
         {
-            UserInterface ui = new UserInterface();
-            GameManager gameManager = new GameManager();
-
-            while (true)
+            while(true)
             {
-                while(gameManager.MaximalNumberOfGuesses == -1)
+                resetGame();
+                askUserForDesiredMaximalNumberOfGuesses();
+                bool quit = startNewGame();
+                if(!quit)
                 {
-                    int maximalNumberOfGuesses = ui.GetMaximalNumberOfGuessesFromUser();
-                    gameManager.MaximalNumberOfGuesses = maximalNumberOfGuesses;
+                    if(!m_Ui.CheckIfUserWantToStartAnotherGame())
+                    {
+                        m_Ui.PrintGoodByeScreen();
+                        return;
+                    }
                 }
+                m_Ui.PrintGoodByeScreen();
+            }            
+        }
 
-                gameManager.GenerateSecretWord();
-                for(int i = 0; i < gameManager.MaximalNumberOfGuesses; i++)
+        private void askUserForDesiredMaximalNumberOfGuesses()
+        {
+            int maximalNumberOfGuesses = m_Ui.GetMaximalNumberOfGuessesFromUser();
+            m_GameManager.MaximalNumberOfGuesses = maximalNumberOfGuesses;
+        }
+
+        private bool startNewGame()
+        {
+            String userGuessInput = "";
+            bool isUserWantsToQuit = false;
+
+            m_Ui.CountOfGuessRowsOnBoard = m_GameManager.MaximalNumberOfGuesses;
+            m_Ui.SecretWord = m_GameManager.GenerateSecretWord();
+            for (int i = 0; i < m_GameManager.MaximalNumberOfGuesses; i++)
+            {
+                Guess currentGuess = new Guess();
+                m_Ui.PrintBoard();
+                while (currentGuess.UserGuess == null)
                 {
-                    ui.PrintScreen(gameManager.MaximalNumberOfGuesses);
-                    String userGuessInput = ui.GetGuessFromUser();
-                    Guess currentGuess = gameManager.ProccesGuessAndGiveFeedback(userGuessInput);
+                    userGuessInput = m_Ui.GetGuessFromUser();
+                    //if userGuessInput == Q --> return isUserWantsToQuit;
+                    currentGuess = m_GameManager.ProccesGuessAndGiveFeedback(userGuessInput);
                     if (currentGuess.UserGuess == null)
                     {
                         Console.WriteLine("Try Again!");
-                        //IMPLEMENT SOMETHING THAT GIVES USER TO TRY AGAIN BEFORE CLEAN SCREEN
-                    }
-                    else
-                    {
-                        ui.AddGuessToGuessesList(currentGuess);
                     }
                 }
-            }            
 
+                m_Ui.AddGuessToGuessesList(currentGuess);
+
+                //if (m_GameManager.isVictory())
+                //{
+                //    m_Ui.PrintYouWonMessage();
+                //    break;
+                //}
+            }
+
+            m_Ui.PrintYouLostMessage();
+
+            return isUserWantsToQuit;
         }
 
+        private void resetGame()
+        {
+            ConsoleUtils.Screen.Clear();
+            m_GameManager.ResetMembers();
+            m_Ui.ResetMembers();
+        }
     }
 }
+

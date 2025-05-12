@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Ex02
 {
-    internal class Guess  //maybe to make it a class
+    internal struct Guess  //maybe to make it a class
     {
         public String UserGuess { get; set; }
         public String GuessFeedBack { get; set; }

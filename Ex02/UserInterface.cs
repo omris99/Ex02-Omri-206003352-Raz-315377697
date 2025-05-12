@@ -10,13 +10,31 @@ namespace Ex02
     {
         private List<Guess> m_ListOfGuessesMadeSoFar = new List<Guess>();
         private string m_UserInput;
+        private string m_SecretWord;
         private readonly int r_TableRightSideWidth = 9;
-        private readonly int r_TableLeftSideWidth = 7;
+        private readonly int r_TableLeftSideWidth = 8;
+        private int r_MinimumNumberOfGuessesAllowed = 4;
+        private int r_MaximumNumberOfGuessesAllowed = 10;
+        private const int k_BoardResultSide = 0;
+        private const int k_BoardPinsSide = 1;
 
-        private string padWordWithSpacesInTheEnd(String i_Word, int i_DesiredWordLength)
+        public int CountOfGuessRowsOnBoard { get; set; }
+        public String SecretWord
+        { 
+            get
+            {
+                return m_SecretWord;
+            }
+            set
+            {
+                m_SecretWord = designViewStyleOfStringToShowOnBoard(value, k_BoardPinsSide);
+            }
+        }
+
+        private string padWordWithSpacesInTheEnd(String i_Word, int i_DesiredWordWithSpacesLength)
         {
             StringBuilder paddedWord = new StringBuilder();
-            int numberOfSpacesToAdd = i_DesiredWordLength - i_Word.Length;
+            int numberOfSpacesToAdd = i_DesiredWordWithSpacesLength - i_Word.Length;
 
             paddedWord.Append(i_Word);
             for(int i = 0; i < numberOfSpacesToAdd; i++)
@@ -27,54 +45,86 @@ namespace Ex02
             return paddedWord.ToString();
 
         }
-        private void printTableRow(String i_RightSideWord = "", String i_LeftSideWord = "")
+        private void printBoardRow(String i_RightSideWord = "", String i_LeftSideWord = "")
         {
             String paddedRightSideWord = padWordWithSpacesInTheEnd(i_RightSideWord, r_TableRightSideWidth);
             String paddedLeftSideWord = padWordWithSpacesInTheEnd(i_LeftSideWord, r_TableLeftSideWidth);
             
             Console.WriteLine("¦{0}¦{1}¦", paddedRightSideWord, paddedLeftSideWord);
-            Console.WriteLine("¦=========¦=======¦");
+            Console.Write("¦");
+            for(int i = 0; i < r_TableRightSideWidth; i++)
+            {
+                Console.Write("=");
+            }
+
+            Console.Write("¦");
+            for (int i = 0; i < r_TableLeftSideWidth; i++)
+            {
+                Console.Write("=");
+            }
+
+            Console.WriteLine("¦");
         }
 
         public int GetMaximalNumberOfGuessesFromUser()
         {
-            int maximalNumberOfGuessesFromUser;
+            int maximalNumberOfGuessesFromUser = 0;
+            bool invalidInput = true;
 
-            Console.WriteLine("Hello! Please enter desired maximal number of guesses: ");
-            m_UserInput = Console.ReadLine();
-            while(!(int.TryParse(m_UserInput, out maximalNumberOfGuessesFromUser)))
+            while(invalidInput)
             {
-                Console.WriteLine($"Invalid Input! it isn't a number.{Environment.NewLine}");
-                Console.WriteLine("Hello! Please enter desired maximal number of guesses (4-10): ");
+                Console.WriteLine("Hello! Please enter desired maximal number of guesses: ");
                 m_UserInput = Console.ReadLine();
+                if(!int.TryParse(m_UserInput, out maximalNumberOfGuessesFromUser))
+                {
+                    Console.WriteLine($"Invalid Input! it isn't a number.{Environment.NewLine}");
+                }
+                else if ((maximalNumberOfGuessesFromUser < r_MinimumNumberOfGuessesAllowed) ||
+                    (maximalNumberOfGuessesFromUser > r_MaximumNumberOfGuessesAllowed))
+                {
+                    Console.WriteLine($"Invalid Input. Please Enter a number in range." +
+                            $" ({r_MinimumNumberOfGuessesAllowed}-{r_MaximumNumberOfGuessesAllowed})" +
+                            $"{Environment.NewLine}");
+                }
+                else
+                {
+                    invalidInput = false;
+                }
             }
 
             return maximalNumberOfGuessesFromUser;
         }
-        //private bool checkUserInput(readonly int i_KindOfInput); //MAXIMAL NUMBER OF GUESSES, GUESS
 
-        public void PrintScreen(int maximalNumberOfGuesses)
+        public void PrintBoard()
         {
-            //DIVIDE TO STATES : FOR EXAMPLE STATE0 IS THE INITIAL SCREEN
-            //STATE 0 : INITIAL SCREEN
             int countOfGuessesMadeSoFar = m_ListOfGuessesMadeSoFar.Count;
 
             ConsoleUtils.Screen.Clear();
             Console.WriteLine($"Current board status:{Environment.NewLine}");
-            printTableRow("Pins:", "Result:");
-            printTableRow(" # # # #", " ");
+            printBoardRow("Pins:", "Result:");
+            if(countOfGuessesMadeSoFar == CountOfGuessRowsOnBoard)
+            {
+                printBoardRow(SecretWord);
+            }
+            else
+            {
+                printBoardRow(" # # # #");
+            }
+
             for (int i = 0; i < countOfGuessesMadeSoFar; i++)
             {
                 Guess currentGuess = m_ListOfGuessesMadeSoFar[i];
-                printTableRow(currentGuess.UserGuess, currentGuess.GuessFeedBack);
+                printBoardRow(currentGuess.UserGuess, currentGuess.GuessFeedBack);
             }
 
-            for (int i = 0; i < (maximalNumberOfGuesses - countOfGuessesMadeSoFar); i++)
+            for (int i = 0; i < (CountOfGuessRowsOnBoard - countOfGuessesMadeSoFar); i++)
             {
-                printTableRow();
+                printBoardRow();
             }
 
+            Console.WriteLine();
         }
+
         public String GetGuessFromUser()
         {
             //The user give A-H input without repetitions and spaces.
@@ -84,14 +134,100 @@ namespace Ex02
             return m_UserInput;
         }
 
+        private Guess designViewStyleOfGuessInBoard(Guess i_Guess)
+        {
+            Guess desginedGuess = new Guess();
+
+            desginedGuess.UserGuess = designViewStyleOfStringToShowOnBoard
+                (i_Guess.UserGuess, k_BoardPinsSide);
+            desginedGuess.GuessFeedBack = designViewStyleOfStringToShowOnBoard
+                (i_Guess.GuessFeedBack, k_BoardResultSide);
+
+            return desginedGuess;
+        }
+
+        private String designViewStyleOfStringToShowOnBoard(String i_StringToStyle, int i_StringContent)
+        {
+            StringBuilder desingedString = new StringBuilder();
+
+            if(i_StringContent == k_BoardPinsSide)
+            {
+                foreach (char letter in i_StringToStyle)
+                {
+                    desingedString.Append(' ');
+                    desingedString.Append(letter);
+                }
+            }
+            else if (i_StringContent == k_BoardResultSide)
+            {
+                foreach (char letter in i_StringToStyle)
+                {
+                    desingedString.Append(letter);
+                    desingedString.Append(' ');
+                }
+            }
+
+            return desingedString.ToString();
+        }
+
         public void AddGuessToGuessesList(Guess i_Guess)
         {
+            i_Guess = designViewStyleOfGuessInBoard(i_Guess);
             m_ListOfGuessesMadeSoFar.Add(i_Guess);
         }
 
-        //public bool CheckIfUserWantToQuitGame(String i_UserInput)
-        //{
-        //    //if Q so quit
-        //}
+        public void PrintGoodByeScreen()
+        {
+            ConsoleUtils.Screen.Clear();
+            Console.WriteLine("GOODBYE!");
+        }
+
+        public void PrintYouWonMessage()
+        {
+            Console.WriteLine($"You guessed after {m_ListOfGuessesMadeSoFar.Count} steps!");
+        }
+        public void PrintYouLostMessage()
+        {
+            PrintBoard();
+            Console.WriteLine("No more guesses allowed. You Lost.");
+        }
+
+        public bool CheckIfUserWantToStartAnotherGame()
+        {
+            bool isUserWantsToStartAnotherGame = true;
+            bool invalidInput = true;
+
+            while(invalidInput)
+            {
+                Console.WriteLine("Would you like to start a new game? <Y/N>");
+                m_UserInput = Console.ReadLine();
+                if (m_UserInput != "Y" && m_UserInput != "N")
+                {
+                    Console.WriteLine("Invalid Input. Please awnser only <Y/N>");
+                }
+                else
+                {
+                    if (m_UserInput == "Y")
+                    {
+                        isUserWantsToStartAnotherGame = true;
+                    }
+                    else if (m_UserInput == "N")
+                    {
+                        isUserWantsToStartAnotherGame = false;
+                    }
+
+                    invalidInput = false;
+                }
+            }
+
+            return isUserWantsToStartAnotherGame;
+        }
+
+        public void ResetMembers()
+        {
+            m_ListOfGuessesMadeSoFar.Clear();
+            m_UserInput = "";
+            m_SecretWord = "";
+        }
     }
 }
