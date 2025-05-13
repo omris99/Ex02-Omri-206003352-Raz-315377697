@@ -26,23 +26,51 @@ namespace Ex02
             program.RunGame();
         }
 
+        //private void RunGame()
+        //{
+        //    while(true)
+        //    {
+        //        resetGame();
+        //        askUserForDesiredMaximalNumberOfGuesses();
+        //        bool quit = startNewGame();
+        //        if (!quit)
+        //        {
+        //            if (!m_Ui.CheckIfUserWantToStartAnotherGame())
+        //            {
+        //                m_Ui.PrintGoodByeScreen();
+        //                return;
+        //            }
+        //        }
+        //        m_Ui.PrintGoodByeScreen();
+        //    }            
+        //}
         private void RunGame()
         {
-            while(true)
+            bool shouldExit = false;
+            while (!shouldExit)
             {
                 resetGame();
                 askUserForDesiredMaximalNumberOfGuesses();
                 bool quit = startNewGame();
-                if(!quit)
+                if(quit)
                 {
-                    if(!m_Ui.CheckIfUserWantToStartAnotherGame())
+                    m_Ui.PrintGoodByeScreen();
+                    shouldExit = true;
+                }
+                else
+                {
+                    bool playAgain = m_Ui.CheckIfUserWantToStartAnotherGame();
+                    if(!playAgain)
                     {
                         m_Ui.PrintGoodByeScreen();
-                        return;
+                        shouldExit = true;
+                    }
+                    else
+                    {
+                        m_Ui.PrintGoodByeScreen();
                     }
                 }
-                m_Ui.PrintGoodByeScreen();
-            }            
+            }
         }
 
         private void askUserForDesiredMaximalNumberOfGuesses()
@@ -54,6 +82,7 @@ namespace Ex02
         {
             String userGuessInput = "";
             bool isUserWantsToQuit = false;
+            bool isVictory = false; // New (RAZ)
 
             m_Ui.CountOfGuessRowsOnBoard = m_GameManager.MaximalNumberOfGuesses;
             m_Ui.SecretWord = m_GameManager.GenerateSecretWord();
@@ -64,24 +93,39 @@ namespace Ex02
                 while (currentGuess.UserGuess == null)
                 {
                     userGuessInput = m_Ui.GetGuessFromUser();
-                    //if userGuessInput == Q --> return isUserWantsToQuit;
+                    //if userGuessInput == Q --> return isUserWantsToQuit; // NEW (RAZ)
+                    if (userGuessInput.ToUpper() == "Q")
+                    {
+                        isUserWantsToQuit = true;
+                        break;
+                    }
                     currentGuess = m_GameManager.ProccesGuessAndGiveFeedback(userGuessInput);
                     if (currentGuess.UserGuess == null)
                     {
                         Console.WriteLine("Try Again!");
                     }
                 }
+                // NEW (RAZ)
+                if (isUserWantsToQuit)
+                {
+                    break;
+                }
 
                 m_Ui.AddGuessToGuessesList(currentGuess);
 
-                //if (m_GameManager.isVictory())
-                //{
-                //    m_Ui.PrintYouWonMessage();
-                //    break;
-                //}
+                if (m_GameManager.IsVictory(currentGuess.UserGuess))
+                {
+                    m_Ui.PrintYouWonMessage();
+                    isVictory = true;
+                    break;
+                }
             }
 
-            m_Ui.PrintYouLostMessage();
+            //m_Ui.PrintYouLostMessage(); // NEW (RAZ)
+            if (!isUserWantsToQuit && !isVictory)
+            {
+                m_Ui.PrintYouLostMessage();
+            }
 
             return isUserWantsToQuit;
         }

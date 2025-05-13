@@ -14,10 +14,11 @@ namespace Ex02
 
         public int MaximalNumberOfGuesses { get; set; }
 
-        //public bool IsVictory()
-        //{
-        //    //
-        //}
+        public bool IsVictory(string i_UserGuess) // NEW (RAZ)
+        {
+            return i_UserGuess == m_SecretWord;
+        }
+
 
         public String GenerateSecretWord()
         {
