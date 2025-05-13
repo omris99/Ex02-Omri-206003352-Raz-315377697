@@ -10,17 +10,15 @@ using Ex02;
 //2. isVictory in GameManager -- Raz
 //3. check if user want to exit -- Raz
 //4. UI SHIT (LIKE FORMAT GUESSES TO FIT IN TABLE, OR LOST MESSAGE) -- OMRI
-
-
-
+//5. make struct SecretWord with bool m_isHidden, Word {get;set;}, Generate() - nullable
+//6. maybe to make class Board? Board.AddGuessToView(), Board.Print()....
 
 namespace Ex02
 {
-    internal class Program //maybe to change public to internal
+    internal class Program
     {
         UserInterface m_Ui = new UserInterface();
         GameManager m_GameManager = new GameManager();
-
 
         public static void Main()
         {
@@ -49,8 +47,7 @@ namespace Ex02
 
         private void askUserForDesiredMaximalNumberOfGuesses()
         {
-            int maximalNumberOfGuesses = m_Ui.GetMaximalNumberOfGuessesFromUser();
-            m_GameManager.MaximalNumberOfGuesses = maximalNumberOfGuesses;
+            m_GameManager.MaximalNumberOfGuesses = m_Ui.GetMaximalNumberOfGuessesFromUser();
         }
 
         private bool startNewGame()

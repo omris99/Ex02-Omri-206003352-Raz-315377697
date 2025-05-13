@@ -73,7 +73,8 @@ namespace Ex02
 
             while(invalidInput)
             {
-                Console.WriteLine("Hello! Please enter desired maximal number of guesses: ");
+                Console.WriteLine($"Hello! Please enter desired maximal number of guesses " +
+                    $"in range: <{r_MinimumNumberOfGuessesAllowed}-{r_MaximumNumberOfGuessesAllowed}>: ");
                 m_UserInput = Console.ReadLine();
                 if(!int.TryParse(m_UserInput, out maximalNumberOfGuessesFromUser))
                 {
@@ -82,9 +83,7 @@ namespace Ex02
                 else if ((maximalNumberOfGuessesFromUser < r_MinimumNumberOfGuessesAllowed) ||
                     (maximalNumberOfGuessesFromUser > r_MaximumNumberOfGuessesAllowed))
                 {
-                    Console.WriteLine($"Invalid Input. Please Enter a number in range." +
-                            $" ({r_MinimumNumberOfGuessesAllowed}-{r_MaximumNumberOfGuessesAllowed})" +
-                            $"{Environment.NewLine}");
+                    Console.WriteLine($"Invalid Input: Number is Out of range{Environment.NewLine}");
                 }
                 else
                 {

@@ -11,9 +11,6 @@ namespace Ex02
     {
         private String m_SecretWord = "";
         private readonly int r_SecretWordLength = 4;
-        private int m_MaximalNumberOfGuesses = -1;
-        private int r_MinimumNumberOfGuessesAllowed = 4;
-        private int r_MaximumNumberOfGuessesAllowed = 10;
 
         public int MaximalNumberOfGuesses { get; set; }
 
@@ -27,17 +24,19 @@ namespace Ex02
             Random random = new Random();
             char currentLetter;
             StringBuilder secretWord = new StringBuilder();
+            Dictionary<char, bool> usedLetters = new Dictionary<char, bool>();
 
             for(int i = 0; i < r_SecretWordLength; i++)
             {
                 currentLetter = (char)random.Next('A', 'H' + 1);
-                if(Utillities.CheckIfLetterExistInString(secretWord.ToString(), currentLetter))
+                if(usedLetters.ContainsKey(currentLetter))
                 {
                     i--;
                 }
                 else
                 {
                     secretWord.Append(currentLetter);
+                    usedLetters.Add(currentLetter, true);
                 }
             }
             m_SecretWord = secretWord.ToString();
@@ -105,7 +104,7 @@ namespace Ex02
 
         public void ResetMembers()
         {
-            m_MaximalNumberOfGuesses = -1;
+            MaximalNumberOfGuesses = -1;
         }
     }
 }
