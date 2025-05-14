@@ -36,9 +36,12 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Board.cs" />
+    <Compile Include="Game.cs" />
     <Compile Include="GameManager.cs" />
     <Compile Include="Guess.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="SecretWord.cs" />
     <Compile Include="UserInterface.cs" />
     <Compile Include="Utillities.cs" />
   </ItemGroup>

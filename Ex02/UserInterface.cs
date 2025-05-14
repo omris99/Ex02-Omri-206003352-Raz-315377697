@@ -8,63 +8,12 @@ namespace Ex02
 {
     internal class UserInterface
     {
-        private List<Guess> m_ListOfGuessesMadeSoFar = new List<Guess>();
         private string m_UserInput;
-        private string m_SecretWord;
-        private readonly int r_TableRightSideWidth = 9;
-        private readonly int r_TableLeftSideWidth = 8;
-        private int r_MinimumNumberOfGuessesAllowed = 4;
-        private int r_MaximumNumberOfGuessesAllowed = 10;
-        private const int k_BoardResultSide = 0;
-        private const int k_BoardPinsSide = 1;
-
-        public int CountOfGuessRowsOnBoard { get; set; }
-        public String SecretWord
-        { 
-            get
-            {
-                return m_SecretWord;
-            }
-            set
-            {
-                m_SecretWord = designViewStyleOfStringToShowOnBoard(value, k_BoardPinsSide);
-            }
-        }
-
-        private string padWordWithSpacesInTheEnd(String i_Word, int i_DesiredWordWithSpacesLength)
-        {
-            StringBuilder paddedWord = new StringBuilder();
-            int numberOfSpacesToAdd = i_DesiredWordWithSpacesLength - i_Word.Length;
-
-            paddedWord.Append(i_Word);
-            for(int i = 0; i < numberOfSpacesToAdd; i++)
-            {
-                paddedWord.Append(" ");
-            }
-
-            return paddedWord.ToString();
-
-        }
-        private void printBoardRow(String i_RightSideWord = "", String i_LeftSideWord = "")
-        {
-            String paddedRightSideWord = padWordWithSpacesInTheEnd(i_RightSideWord, r_TableRightSideWidth);
-            String paddedLeftSideWord = padWordWithSpacesInTheEnd(i_LeftSideWord, r_TableLeftSideWidth);
-            
-            Console.WriteLine("¦{0}¦{1}¦", paddedRightSideWord, paddedLeftSideWord);
-            Console.Write("¦");
-            for(int i = 0; i < r_TableRightSideWidth; i++)
-            {
-                Console.Write("=");
-            }
-
-            Console.Write("¦");
-            for (int i = 0; i < r_TableLeftSideWidth; i++)
-            {
-                Console.Write("=");
-            }
-
-            Console.WriteLine("¦");
-        }
+        private readonly int r_MinimumNumberOfGuessesAllowed = 4;
+        private readonly int r_MaximumNumberOfGuessesAllowed = 10;
+        private int m_SecretWordLength = 4;
+        private int m_CountOfGuessesMadeSoFar;
+        Board board = new Board();
 
         public int GetMaximalNumberOfGuessesFromUser()
         {
@@ -90,89 +39,22 @@ namespace Ex02
                     invalidInput = false;
                 }
             }
-
+            board.CountOfGuessRowsOnBoard = maximalNumberOfGuessesFromUser;
             return maximalNumberOfGuessesFromUser;
-        }
-
-        public void PrintBoard()
-        {
-            int countOfGuessesMadeSoFar = m_ListOfGuessesMadeSoFar.Count;
-
-            ConsoleUtils.Screen.Clear();
-            Console.WriteLine($"Current board status:{Environment.NewLine}");
-            printBoardRow("Pins:", "Result:");
-            if(countOfGuessesMadeSoFar == CountOfGuessRowsOnBoard)
-            {
-                printBoardRow(SecretWord);
-            }
-            else
-            {
-                printBoardRow(" # # # #");
-            }
-
-            for (int i = 0; i < countOfGuessesMadeSoFar; i++)
-            {
-                Guess currentGuess = m_ListOfGuessesMadeSoFar[i];
-                printBoardRow(currentGuess.UserGuess, currentGuess.GuessFeedBack);
-            }
-
-            for (int i = 0; i < (CountOfGuessRowsOnBoard - countOfGuessesMadeSoFar); i++)
-            {
-                printBoardRow();
-            }
-
-            Console.WriteLine();
         }
 
         public String GetGuessFromUser()
         {
-            //The user give A-H input without repetitions and spaces.
-
             Console.WriteLine("Please type your next guess <A B C D> or 'Q' to quit");
             m_UserInput = Console.ReadLine();
+            while(!checkGuessInputValidation(m_UserInput))
+            {
+                m_UserInput = Console.ReadLine();
+            }
+
+            m_CountOfGuessesMadeSoFar++;
+
             return m_UserInput;
-        }
-
-        private Guess designViewStyleOfGuessInBoard(Guess i_Guess)
-        {
-            Guess desginedGuess = new Guess();
-
-            desginedGuess.UserGuess = designViewStyleOfStringToShowOnBoard
-                (i_Guess.UserGuess, k_BoardPinsSide);
-            desginedGuess.GuessFeedBack = designViewStyleOfStringToShowOnBoard
-                (i_Guess.GuessFeedBack, k_BoardResultSide);
-
-            return desginedGuess;
-        }
-
-        private String designViewStyleOfStringToShowOnBoard(String i_StringToStyle, int i_StringContent)
-        {
-            StringBuilder desingedString = new StringBuilder();
-
-            if(i_StringContent == k_BoardPinsSide)
-            {
-                foreach (char letter in i_StringToStyle)
-                {
-                    desingedString.Append(' ');
-                    desingedString.Append(letter);
-                }
-            }
-            else if (i_StringContent == k_BoardResultSide)
-            {
-                foreach (char letter in i_StringToStyle)
-                {
-                    desingedString.Append(letter);
-                    desingedString.Append(' ');
-                }
-            }
-
-            return desingedString.ToString();
-        }
-
-        public void AddGuessToGuessesList(Guess i_Guess)
-        {
-            i_Guess = designViewStyleOfGuessInBoard(i_Guess);
-            m_ListOfGuessesMadeSoFar.Add(i_Guess);
         }
 
         public void PrintGoodByeScreen()
@@ -183,11 +65,12 @@ namespace Ex02
 
         public void PrintYouWonMessage()
         {
-            Console.WriteLine($"You guessed after {m_ListOfGuessesMadeSoFar.Count} steps!");
+            Console.WriteLine($"You guessed after {m_CountOfGuessesMadeSoFar} steps!");
         }
+
         public void PrintYouLostMessage()
         {
-            PrintBoard();
+            board.Print();
             Console.WriteLine("No more guesses allowed. You Lost.");
         }
 
@@ -222,11 +105,59 @@ namespace Ex02
             return isUserWantsToStartAnotherGame;
         }
 
+        public void PrintBoard()
+        {
+            board.Print();
+        }
+
         public void ResetMembers()
         {
-            m_ListOfGuessesMadeSoFar.Clear();
+            board.Reset();
             m_UserInput = "";
-            m_SecretWord = "";
+        }
+
+        public void AddGuessToBoardView(Guess i_Guess)
+        {
+            board.AddGuessToGuessesList(i_Guess);
+        }
+
+        private bool checkGuessInputValidation(String i_UserGuessInput)
+        {
+            bool isValid = true;
+            
+            if(i_UserGuessInput == "Q")
+            {
+                isValid = true;
+            }
+            else if (i_UserGuessInput.Length != m_SecretWordLength)
+            {
+                Console.WriteLine($"Invalid Input. length of guess should be {m_SecretWordLength}");
+                isValid = false;
+            }
+            else
+            {
+                Dictionary<char, bool> lettersExistInUserGuess = new Dictionary<char, bool>();
+
+                foreach (char letter in i_UserGuessInput)
+                {
+                    if ((letter < 'A' || letter > 'H') || (lettersExistInUserGuess.ContainsKey(letter)))
+                    {
+                        Console.WriteLine($"Invalid Input. guess should contain only letters in range <A-H>");
+                        isValid = false;
+                        break;
+                    }
+
+                    lettersExistInUserGuess.Add(letter, true);
+                }
+            }
+
+            return isValid;
+        }
+
+        public void SetSecretWordInUi(SecretWord i_SecretWord)
+        {
+            m_SecretWordLength = i_SecretWord.FixedLength();
+            board.SetReferenceToSecretWord(i_SecretWord);
         }
     }
 }
