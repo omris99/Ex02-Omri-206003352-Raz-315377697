@@ -8,8 +8,8 @@ namespace Ex02
 {
     internal class Game
     {
-        UserInterface m_Ui = new UserInterface();
-        GameManager m_GameManager = new GameManager();
+        private UserInterface m_UiManager = new UserInterface();
+        private GameLogic m_LogicManager = new GameLogic();
 
         public void RunGame()
         {
@@ -19,75 +19,59 @@ namespace Ex02
             {
                 resetGame();
                 askUserForDesiredMaximalNumberOfGuesses();
-                shouldExit = startNewGame();
+                shouldExit = playGame();
                 if (shouldExit)
                 {
                     break;
                 }
 
-                if (!m_Ui.CheckIfUserWantToStartAnotherGame())
+                if (!m_UiManager.CheckIfUserWantToStartAnotherGame())
                 {
                     shouldExit = true;
                 }
             }
 
-            m_Ui.PrintGoodByeScreen();
+            m_UiManager.PrintGoodByeScreen();
         }
 
         private void askUserForDesiredMaximalNumberOfGuesses()
         {
-            m_GameManager.MaximalNumberOfGuesses = m_Ui.GetMaximalNumberOfGuessesFromUser();
+            m_LogicManager.MaximalNumberOfGuesses = m_UiManager.GetMaximalNumberOfGuessesFromUser();
         }
 
-        private bool startNewGame()
+        private bool playGame()
         {
             String userGuessInput = "";
             bool isUserWantsToQuit = false;
             bool isVictory = false;
 
-            //m_Ui.CountOfGuessRowsOnBoard = m_GameManager.MaximalNumberOfGuesses;
-            //m_Ui.SecretWord = m_GameManager.SecretCode;
-            for (int i = 0; i < m_GameManager.MaximalNumberOfGuesses; i++)
+            for (int i = 0; i < m_LogicManager.MaximalNumberOfGuesses; i++)
             {
-                Guess currentGuess = new Guess();
-                m_Ui.PrintBoard();
-                while (currentGuess.UserGuess == null)
+                m_UiManager.PrintBoard();
+                userGuessInput = m_UiManager.GetGuessFromUser();
+                if(userGuessInput.ToUpper() == "Q")
                 {
-                    userGuessInput = m_Ui.GetGuessFromUser();
-                    //if userGuessInput == Q --> return isUserWantsToQuit; // NEW (RAZ)
-                    if (userGuessInput.ToUpper() == "Q")
-                    {
-                        isUserWantsToQuit = true;
-                        break;
-                    }
-
-                    currentGuess = m_GameManager.ProccesGuessAndGiveFeedback(userGuessInput);
-                    if (currentGuess.UserGuess == null)
-                    {
-                        Console.WriteLine("Try Again!");
-                    }
-                }
-                // NEW (RAZ)
-                if (isUserWantsToQuit)
-                {
+                    isUserWantsToQuit = true;
                     break;
                 }
 
-                m_Ui.AddGuessToBoardView(currentGuess);
+                Guess currentGuess = m_LogicManager.ProccesGuessAndGiveFeedback(userGuessInput);
 
-                if (m_GameManager.IsVictory(currentGuess.UserGuess))
+                m_UiManager.AddGuessToBoardView(currentGuess);
+
+                if(currentGuess.IsPerfectGuess)
                 {
-                    m_Ui.PrintYouWonMessage();
+                    m_UiManager.PrintBoard();
+                    m_UiManager.PrintYouWonMessage();
                     isVictory = true;
                     break;
                 }
             }
 
-            //m_Ui.PrintYouLostMessage(); // NEW (RAZ)
             if (!isUserWantsToQuit && !isVictory)
             {
-                m_GameManager.RevealSecretWord();
-                m_Ui.PrintYouLostMessage();
+                m_LogicManager.RevealSecretWord();
+                m_UiManager.PrintYouLostMessage();
             }
 
             return isUserWantsToQuit;
@@ -96,9 +80,9 @@ namespace Ex02
         private void resetGame()
         {
             ConsoleUtils.Screen.Clear();
-            m_GameManager.ResetMembers();
-            m_Ui.ResetMembers();
-            m_Ui.SetSecretWordInUi(m_GameManager.SecretWord);
+            m_LogicManager.ResetMembers();
+            m_UiManager.ResetMembers();
+            m_UiManager.SetSecretWordInUi(m_LogicManager.SecretWord);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Ex02
 
         public void AddGuessToGuessesList(Guess i_Guess)
         {
-            i_Guess = designViewStyleOfGuessInBoard(i_Guess);
+            i_Guess = styleGuessBeforeDisplay(i_Guess);
             m_GuessHistoryToViewOnBoard.Add(i_Guess);
         }
 
@@ -45,10 +45,10 @@ namespace Ex02
             Console.WriteLine();
         }
 
-        private string padWordWithSpacesInTheEnd(String i_Word, int i_DesiredWordWithSpacesLength)
+        private string padWordWithSpacesInTheEnd(String i_Word, int i_DesiredWordLengthAfterPadding)
         {
             StringBuilder paddedWord = new StringBuilder();
-            int numberOfSpacesToAdd = i_DesiredWordWithSpacesLength - i_Word.Length;
+            int numberOfSpacesToAdd = i_DesiredWordLengthAfterPadding - i_Word.Length;
 
             paddedWord.Append(i_Word);
             for (int i = 0; i < numberOfSpacesToAdd; i++)
@@ -57,8 +57,8 @@ namespace Ex02
             }
 
             return paddedWord.ToString();
-
         }
+
         private void printBoardRow(String i_RightSideWord = "", String i_LeftSideWord = "")
         {
             String paddedRightSideWord = padWordWithSpacesInTheEnd(i_RightSideWord, r_TableRightSideWidth);
@@ -103,7 +103,7 @@ namespace Ex02
 
             return desingedString.ToString();
         }
-        private Guess designViewStyleOfGuessInBoard(Guess i_Guess)
+        private Guess styleGuessBeforeDisplay(Guess i_Guess)
         {
             Guess desginedGuess = new Guess();
 

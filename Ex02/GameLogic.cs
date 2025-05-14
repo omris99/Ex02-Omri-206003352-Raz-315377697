@@ -7,16 +7,11 @@ using System.Threading.Tasks;
 
 namespace Ex02
 {
-    internal class GameManager
+    internal class GameLogic
     {
         public SecretWord SecretWord { get; private set; } = new SecretWord();
 
-        public int MaximalNumberOfGuesses { get; set; }
-
-        public bool IsVictory(string i_UserGuess)
-        {
-            return SecretWord.CheckIfGuessIsCorrect(i_UserGuess);
-        }
+        public int? MaximalNumberOfGuesses { get; set; }
 
         public void RevealSecretWord()
         {
@@ -26,9 +21,11 @@ namespace Ex02
         public Guess ProccesGuessAndGiveFeedback(String i_UserInputGuess)
         {
             Guess guess = new Guess();
+            bool isPerfectGuess;
 
             guess.UserGuess = i_UserInputGuess;
-            guess.GuessFeedBack = SecretWord.CompareGuessToSecretWord(i_UserInputGuess);
+            guess.GuessFeedBack = SecretWord.CompareGuessToSecretWord(i_UserInputGuess, out isPerfectGuess);
+            guess.IsPerfectGuess = isPerfectGuess;
 
             return guess;
         }
@@ -36,7 +33,7 @@ namespace Ex02
         public void ResetMembers()
         {
             GenerateSecretWord();
-            MaximalNumberOfGuesses = -1; //HAVE TO CHANGE IT
+            MaximalNumberOfGuesses = null;
         }
 
         public void GenerateSecretWord()

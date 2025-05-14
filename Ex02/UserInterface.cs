@@ -40,6 +40,7 @@ namespace Ex02
                 }
             }
             board.CountOfGuessRowsOnBoard = maximalNumberOfGuessesFromUser;
+
             return maximalNumberOfGuessesFromUser;
         }
 
@@ -114,6 +115,7 @@ namespace Ex02
         {
             board.Reset();
             m_UserInput = "";
+            m_CountOfGuessesMadeSoFar = 0;
         }
 
         public void AddGuessToBoardView(Guess i_Guess)

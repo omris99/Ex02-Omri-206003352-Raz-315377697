@@ -57,12 +57,7 @@ namespace Ex02
             m_Word = secretWord.ToString();
         }
 
-        public bool CheckIfGuessIsCorrect(String i_UserGuess)
-        {
-            return i_UserGuess == m_Word;
-        }
-
-        public String CompareGuessToSecretWord(String i_UserInputGuess)
+        public String CompareGuessToSecretWord(String i_UserInputGuess, out bool isPerfectGuess)
         {
             StringBuilder vString = new StringBuilder();
             StringBuilder xString = new StringBuilder();
@@ -80,6 +75,7 @@ namespace Ex02
                 }
             }
 
+            isPerfectGuess = vString.Length == r_SecretWordLength;
             feedBack.Append(vString);
             feedBack.Append(xString);
 
