@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ex02
 {
@@ -17,7 +14,7 @@ namespace Ex02
 
         public int GetMaximalNumberOfGuessesFromUser()
         {
-            int maximalNumberOfGuessesFromUser = 0;
+            int maximalNumberOfGuessesInput = 0;
             bool invalidInput = true;
 
             while(invalidInput)
@@ -25,12 +22,12 @@ namespace Ex02
                 Console.WriteLine($"Hello! Please enter desired maximal number of guesses " +
                     $"in range: <{r_MinimumNumberOfGuessesAllowed}-{r_MaximumNumberOfGuessesAllowed}>: ");
                 m_UserInput = Console.ReadLine();
-                if(!int.TryParse(m_UserInput, out maximalNumberOfGuessesFromUser))
+                if(!int.TryParse(m_UserInput, out maximalNumberOfGuessesInput))
                 {
                     Console.WriteLine($"Invalid Input! it isn't a number.{Environment.NewLine}");
                 }
-                else if ((maximalNumberOfGuessesFromUser < r_MinimumNumberOfGuessesAllowed) ||
-                    (maximalNumberOfGuessesFromUser > r_MaximumNumberOfGuessesAllowed))
+                else if((maximalNumberOfGuessesInput < r_MinimumNumberOfGuessesAllowed)
+                        || (maximalNumberOfGuessesInput > r_MaximumNumberOfGuessesAllowed))
                 {
                     Console.WriteLine($"Invalid Input: Number is Out of range{Environment.NewLine}");
                 }
@@ -39,9 +36,10 @@ namespace Ex02
                     invalidInput = false;
                 }
             }
-            board.CountOfGuessRowsOnBoard = maximalNumberOfGuessesFromUser;
 
-            return maximalNumberOfGuessesFromUser;
+            board.CountOfGuessRowsOnBoard = maximalNumberOfGuessesInput;
+
+            return maximalNumberOfGuessesInput;
         }
 
         public String GetGuessFromUser()
@@ -61,11 +59,12 @@ namespace Ex02
         public void PrintGoodByeScreen()
         {
             ConsoleUtils.Screen.Clear();
-            Console.WriteLine("GOODBYE!");
+            Console.WriteLine($"Thank You For Playing!{Environment.NewLine}GOODBYE!");
         }
 
         public void PrintYouWonMessage()
         {
+            board.Print();
             Console.WriteLine($"You guessed after {m_CountOfGuessesMadeSoFar} steps!");
         }
 
@@ -90,15 +89,7 @@ namespace Ex02
                 }
                 else
                 {
-                    if (m_UserInput == "Y")
-                    {
-                        isUserWantsToStartAnotherGame = true;
-                    }
-                    else if (m_UserInput == "N")
-                    {
-                        isUserWantsToStartAnotherGame = false;
-                    }
-
+                    isUserWantsToStartAnotherGame = m_UserInput == "Y";
                     invalidInput = false;
                 }
             }
@@ -114,7 +105,7 @@ namespace Ex02
         public void ResetMembers()
         {
             board.Reset();
-            m_UserInput = "";
+            m_UserInput = String.Empty;
             m_CountOfGuessesMadeSoFar = 0;
         }
 

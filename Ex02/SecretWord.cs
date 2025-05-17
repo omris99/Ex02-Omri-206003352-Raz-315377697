@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Ex02
 {
     internal class SecretWord
     {
-        String m_Word = "";
+        String m_Word = String.Empty;
         private readonly int r_SecretWordLength = 4;
         bool m_isHidden = true;
 
@@ -26,6 +23,7 @@ namespace Ex02
                     return m_Word;
                 }
             }
+
             set
             {
                 Console.WriteLine("Can't set Secret Word.");
@@ -39,10 +37,10 @@ namespace Ex02
             StringBuilder secretWord = new StringBuilder();
             Dictionary<char, bool> usedLetters = new Dictionary<char, bool>();
 
-            for (int i = 0; i < r_SecretWordLength; i++)
+            for(int i = 0; i < r_SecretWordLength; i++)
             {
                 currentLetter = (char)random.Next('A', 'H' + 1);
-                if (usedLetters.ContainsKey(currentLetter))
+                if(usedLetters.ContainsKey(currentLetter))
                 {
                     i--;
                 }
@@ -57,7 +55,7 @@ namespace Ex02
             m_Word = secretWord.ToString();
         }
 
-        public String CompareGuessToSecretWord(String i_UserInputGuess, out bool isPerfectGuess)
+        public String CompareGuessToSecretWord(String i_UserInputGuess, out bool o_IsPerfectGuess)
         {
             StringBuilder vString = new StringBuilder();
             StringBuilder xString = new StringBuilder();
@@ -69,13 +67,13 @@ namespace Ex02
                 {
                     vString.Append('V');
                 }
-                else if (Utillities.CheckIfLetterExistInString(m_Word, i_UserInputGuess[i]))
+                else if (checkIfLetterExistInString(m_Word, i_UserInputGuess[i]))
                 {
                     xString.Append('X');
                 }
             }
 
-            isPerfectGuess = vString.Length == r_SecretWordLength;
+            o_IsPerfectGuess = vString.Length == r_SecretWordLength;
             feedBack.Append(vString);
             feedBack.Append(xString);
 
@@ -90,6 +88,22 @@ namespace Ex02
         public void Unhide()
         {
             m_isHidden = false;
+        }
+
+        private bool checkIfLetterExistInString(String i_String, char i_Letter)
+        {
+            bool isLetterExistInString = false;
+
+            foreach(char letter in i_String)
+            {
+                if(letter == i_Letter)
+                {
+                    isLetterExistInString = true;
+                    break;
+                }
+            }
+
+            return isLetterExistInString;
         }
     }
 }
