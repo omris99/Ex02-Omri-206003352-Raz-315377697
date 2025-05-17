@@ -24,9 +24,9 @@ namespace Ex02
                 }
             }
 
-            set
+            private set
             {
-                Console.WriteLine("Can't set Secret Word.");
+                m_Word = value;
             }
         }
 

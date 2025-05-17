@@ -19,8 +19,9 @@ namespace Ex02
 
             while(invalidInput)
             {
-                Console.WriteLine($"Hello! Please enter desired maximal number of guesses " +
-                    $"in range: <{r_MinimumNumberOfGuessesAllowed}-{r_MaximumNumberOfGuessesAllowed}>: ");
+
+                Console.WriteLine("Please enter desired maximal number of guesses in range: <{0}-{1}>:",
+                                   r_MinimumNumberOfGuessesAllowed, r_MaximumNumberOfGuessesAllowed);
                 m_UserInput = Console.ReadLine();
                 if(!int.TryParse(m_UserInput, out maximalNumberOfGuessesInput))
                 {
