@@ -41,9 +41,9 @@ namespace Ex02
             bool isUserWantsToQuit = false;
             bool isVictory = false;
 
-            for(int i = 0; i < m_LogicManager.MaximalNumberOfGuesses; i++)
+            m_UiManager.PrintBoard();
+            for (int i = 0; i < m_LogicManager.MaximalNumberOfGuesses; i++)
             {
-                m_UiManager.PrintBoard();
                 userGuessInput = m_UiManager.GetGuessFromUser();
                 if(userGuessInput.ToUpper() == "Q")
                 {
@@ -52,8 +52,9 @@ namespace Ex02
                 }
 
                 Guess currentGuess = m_LogicManager.ProccesGuessAndGiveFeedback(userGuessInput);
-                m_UiManager.AddGuessToBoardView(currentGuess);
-                if(currentGuess.IsPerfectGuess)
+                m_LogicManager.AddGuessToList(currentGuess);
+                m_UiManager.PrintBoard(m_LogicManager.Guesses);
+                if (currentGuess.IsPerfectGuess)
                 {
                     m_UiManager.PrintYouWonMessage();
                     isVictory = true;
@@ -64,6 +65,7 @@ namespace Ex02
             if(!isUserWantsToQuit && !isVictory)
             {
                 m_LogicManager.RevealSecretWord();
+                m_UiManager.PrintBoard(m_LogicManager.Guesses);
                 m_UiManager.PrintYouLostMessage();
             }
 

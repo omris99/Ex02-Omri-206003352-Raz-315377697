@@ -38,7 +38,7 @@ namespace Ex02
                 }
             }
 
-            board.CountOfGuessRowsOnBoard = maximalNumberOfGuessesInput;
+            board.CountOfGuessRows = maximalNumberOfGuessesInput;
 
             return maximalNumberOfGuessesInput;
         }
@@ -65,13 +65,11 @@ namespace Ex02
 
         public void PrintYouWonMessage()
         {
-            board.Print();
             Console.WriteLine($"You guessed after {m_CountOfGuessesMadeSoFar} steps!");
         }
 
         public void PrintYouLostMessage()
         {
-            board.Print();
             Console.WriteLine("No more guesses allowed. You Lost.");
         }
 
@@ -98,21 +96,15 @@ namespace Ex02
             return isUserWantsToStartAnotherGame;
         }
 
-        public void PrintBoard()
+        public void PrintBoard(List<Guess> i_GuessesList = null)
         {
-            board.Print();
+            board.Print(i_GuessesList);
         }
 
         public void ResetMembers()
         {
-            board.Reset();
             m_UserInput = String.Empty;
             m_CountOfGuessesMadeSoFar = 0;
-        }
-
-        public void AddGuessToBoardView(Guess i_Guess)
-        {
-            board.AddGuessToGuessesList(i_Guess);
         }
 
         private bool checkGuessInputValidation(String i_UserGuessInput)

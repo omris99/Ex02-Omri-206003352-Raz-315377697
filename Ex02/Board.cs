@@ -11,7 +11,6 @@ namespace Ex02
         private readonly int r_RightSideWidth = 9;
         private readonly String r_RightSideHeader = "Result:";
         public SecretWord m_SecretWord = new SecretWord();
-        private List<Guess> m_Guesses = new List<Guess>();
 
         private enum eBoardSide
         {
@@ -19,17 +18,20 @@ namespace Ex02
             Right
         };
 
-        public int CountOfGuessRowsOnBoard { get; set; }
+        public int CountOfGuessRows { get; set; }
 
-        public void AddGuessToGuessesList(Guess i_Guess)
+        public void Print(List<Guess> i_GuessesList)
         {
-            i_Guess = styleGuessBeforeDisplay(i_Guess);
-            m_Guesses.Add(i_Guess);
-        }
+            int countOfGuessesMadeSoFar;
 
-        public void Print()
-        {
-            int countOfGuessesMadeSoFar = m_Guesses.Count;
+            if(i_GuessesList == null)
+            {
+                countOfGuessesMadeSoFar = 0;
+            }
+            else
+            {
+                countOfGuessesMadeSoFar = i_GuessesList.Count;
+            }
 
             ConsoleUtils.Screen.Clear();
             Console.WriteLine($"Current board status:{Environment.NewLine}");
@@ -37,11 +39,11 @@ namespace Ex02
             printBoardRow(styleStringBeforeDisplay(m_SecretWord.Word, eBoardSide.Left));
             for(int i = 0; i < countOfGuessesMadeSoFar; i++)
             {
-                Guess currentGuess = m_Guesses[i];
-                printBoardRow(currentGuess.UserGuess, currentGuess.FeedBack);
+                Guess currentGuessToPrint = styleGuessBeforeDisplay(i_GuessesList[i]);
+                printBoardRow(currentGuessToPrint.UserGuess, currentGuessToPrint.FeedBack);
             }
 
-            for(int i = 0; i < (CountOfGuessRowsOnBoard - countOfGuessesMadeSoFar); i++)
+            for(int i = 0; i < (CountOfGuessRows - countOfGuessesMadeSoFar); i++)
             {
                 printBoardRow();
             }
@@ -85,7 +87,7 @@ namespace Ex02
         }
 
         private String styleStringBeforeDisplay(String i_StringToStyle,
-            eBoardSide i_DesiredBoardSideToDisplayString)
+                                                eBoardSide i_DesiredBoardSideToDisplayString)
         {
             StringBuilder desingedString = new StringBuilder();
 
@@ -119,11 +121,6 @@ namespace Ex02
                 (i_Guess.FeedBack, eBoardSide.Right);
 
             return desginedGuess;
-        }
-
-        public void Reset()
-        {
-            m_Guesses.Clear();
         }
 
         public void SetReferenceToSecretWord(SecretWord i_SecretWord)

@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Ex02
 {
     internal class GameLogic
     {
+        public List<Guess> Guesses { get; private set; } = new List<Guess>();
+
         public SecretWord SecretWord { get; private set; } = new SecretWord();
 
         public int? MaximalNumberOfGuesses { get; set; }
@@ -29,11 +32,17 @@ namespace Ex02
         {
             GenerateSecretWord();
             MaximalNumberOfGuesses = null;
+            Guesses.Clear();
         }
 
         public void GenerateSecretWord()
         {
             SecretWord.Generate();
+        }
+
+        public void AddGuessToList(Guess i_Guess)
+        {
+            Guesses.Add(i_Guess);
         }
     }
 }
