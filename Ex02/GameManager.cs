@@ -6,7 +6,6 @@ namespace Ex02
     {
         private UserInterface m_UiManager = new UserInterface();
         private GameLogic m_LogicManager = new GameLogic();
-        private String m_QuitRequest = "Q";
 
         public void RunGame()
         {
@@ -46,7 +45,7 @@ namespace Ex02
             {
                 m_UiManager.PrintBoard();
                 userGuessInput = m_UiManager.GetGuessFromUser();
-                if(userGuessInput.ToUpper() == m_QuitRequest)
+                if(userGuessInput.ToUpper() == "Q")
                 {
                     isUserWantsToQuit = true;
                     break;

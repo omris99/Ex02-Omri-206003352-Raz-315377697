@@ -123,7 +123,7 @@ namespace Ex02
             {
                 isValid = true;
             }
-            else if (i_UserGuessInput.Length != m_SecretWordLength)
+            else if(i_UserGuessInput.Length != m_SecretWordLength)
             {
                 Console.WriteLine($"Invalid Input. length of guess should be {m_SecretWordLength}");
                 isValid = false;
@@ -132,11 +132,19 @@ namespace Ex02
             {
                 Dictionary<char, bool> lettersExistInUserGuess = new Dictionary<char, bool>();
 
-                foreach (char letter in i_UserGuessInput)
+                foreach(char letter in i_UserGuessInput)
                 {
-                    if ((letter < 'A' || letter > 'H') || (lettersExistInUserGuess.ContainsKey(letter)))
+                    if((letter < 'A' || letter > 'H') || (lettersExistInUserGuess.ContainsKey(letter)))
                     {
-                        Console.WriteLine($"Invalid Input. guess should contain only letters in range <A-H>");
+                        if(letter < 'A' || letter > 'H')
+                        {
+                            Console.WriteLine($"Invalid Input. guess should contain only letters in range <A-H>");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Invalid Input. each letter in guess should appear once.");
+                        }
+
                         isValid = false;
                         break;
                     }
