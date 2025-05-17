@@ -6,12 +6,12 @@ namespace Ex02
 {
     internal class Board
     {
-        private readonly int r_BoardLeftSideWidth = 8;
-        private readonly String r_BoardLeftSideHeader = "Pins:";
-        private readonly int r_BoardRightSideWidth = 9;
-        private readonly String r_BoardRightSideHeader = "Result:";
+        private readonly int r_LeftSideWidth = 8;
+        private readonly String r_LeftSideHeader = "Pins:";
+        private readonly int r_RightSideWidth = 9;
+        private readonly String r_RightSideHeader = "Result:";
         public SecretWord m_SecretWord = new SecretWord();
-        private List<Guess> m_GuessHistoryToViewOnBoard = new List<Guess>();
+        private List<Guess> m_Guesses = new List<Guess>();
 
         private enum eBoardSide
         {
@@ -24,21 +24,21 @@ namespace Ex02
         public void AddGuessToGuessesList(Guess i_Guess)
         {
             i_Guess = styleGuessBeforeDisplay(i_Guess);
-            m_GuessHistoryToViewOnBoard.Add(i_Guess);
+            m_Guesses.Add(i_Guess);
         }
 
         public void Print()
         {
-            int countOfGuessesMadeSoFar = m_GuessHistoryToViewOnBoard.Count;
+            int countOfGuessesMadeSoFar = m_Guesses.Count;
 
             ConsoleUtils.Screen.Clear();
             Console.WriteLine($"Current board status:{Environment.NewLine}");
-            printBoardRow(r_BoardLeftSideHeader, r_BoardRightSideHeader);
+            printBoardRow(r_LeftSideHeader, r_RightSideHeader);
             printBoardRow(styleStringBeforeDisplay(m_SecretWord.Word, eBoardSide.Left));
             for(int i = 0; i < countOfGuessesMadeSoFar; i++)
             {
-                Guess currentGuess = m_GuessHistoryToViewOnBoard[i];
-                printBoardRow(currentGuess.UserGuess, currentGuess.GuessFeedBack);
+                Guess currentGuess = m_Guesses[i];
+                printBoardRow(currentGuess.UserGuess, currentGuess.FeedBack);
             }
 
             for(int i = 0; i < (CountOfGuessRowsOnBoard - countOfGuessesMadeSoFar); i++)
@@ -65,18 +65,18 @@ namespace Ex02
 
         private void printBoardRow(String i_RightSideWord = "", String i_LeftSideWord = "")
         {
-            String paddedRightSideWord = padWordWithSpacesInTheEnd(i_RightSideWord, r_BoardRightSideWidth);
-            String paddedLeftSideWord = padWordWithSpacesInTheEnd(i_LeftSideWord, r_BoardLeftSideWidth);
+            String paddedRightSideWord = padWordWithSpacesInTheEnd(i_RightSideWord, r_RightSideWidth);
+            String paddedLeftSideWord = padWordWithSpacesInTheEnd(i_LeftSideWord, r_LeftSideWidth);
 
             Console.WriteLine("¦{0}¦{1}¦", paddedRightSideWord, paddedLeftSideWord);
             Console.Write("¦");
-            for(int i = 0; i < r_BoardRightSideWidth; i++)
+            for(int i = 0; i < r_RightSideWidth; i++)
             {
                 Console.Write("=");
             }
 
             Console.Write("¦");
-            for(int i = 0; i < r_BoardLeftSideWidth; i++)
+            for(int i = 0; i < r_LeftSideWidth; i++)
             {
                 Console.Write("=");
             }
@@ -115,15 +115,15 @@ namespace Ex02
 
             desginedGuess.UserGuess = styleStringBeforeDisplay
                 (i_Guess.UserGuess, eBoardSide.Left);
-            desginedGuess.GuessFeedBack = styleStringBeforeDisplay
-                (i_Guess.GuessFeedBack, eBoardSide.Right);
+            desginedGuess.FeedBack = styleStringBeforeDisplay
+                (i_Guess.FeedBack, eBoardSide.Right);
 
             return desginedGuess;
         }
 
         public void Reset()
         {
-            m_GuessHistoryToViewOnBoard.Clear();
+            m_Guesses.Clear();
         }
 
         public void SetReferenceToSecretWord(SecretWord i_SecretWord)

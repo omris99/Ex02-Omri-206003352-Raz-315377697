@@ -6,7 +6,7 @@ namespace Ex02
     {
         public String UserGuess { get; set; }
 
-        public String GuessFeedBack { get; set; }
+        public String FeedBack { get; set; }
 
         public bool IsPerfectGuess { get; set; }
     }

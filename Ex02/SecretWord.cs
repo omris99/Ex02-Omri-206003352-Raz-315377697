@@ -7,7 +7,7 @@ namespace Ex02
     internal class SecretWord
     {
         String m_Word = String.Empty;
-        private readonly int r_SecretWordLength = 4;
+        private readonly int r_WordLength = 4;
         bool m_isHidden = true;
 
         public String Word
@@ -37,7 +37,7 @@ namespace Ex02
             StringBuilder secretWord = new StringBuilder();
             Dictionary<char, bool> usedLetters = new Dictionary<char, bool>();
 
-            for(int i = 0; i < r_SecretWordLength; i++)
+            for(int i = 0; i < r_WordLength; i++)
             {
                 currentLetter = (char)random.Next('A', 'H' + 1);
                 if(usedLetters.ContainsKey(currentLetter))
@@ -61,7 +61,7 @@ namespace Ex02
             StringBuilder xString = new StringBuilder();
             StringBuilder feedBack = new StringBuilder();
 
-            for (int i = 0; i < r_SecretWordLength; i++)
+            for (int i = 0; i < r_WordLength; i++)
             {
                 if (i_UserInputGuess[i] == m_Word[i])
                 {
@@ -73,7 +73,7 @@ namespace Ex02
                 }
             }
 
-            o_IsPerfectGuess = vString.Length == r_SecretWordLength;
+            o_IsPerfectGuess = vString.Length == r_WordLength;
             feedBack.Append(vString);
             feedBack.Append(xString);
 
@@ -82,7 +82,7 @@ namespace Ex02
 
         public int FixedLength()
         {
-            return r_SecretWordLength;
+            return r_WordLength;
         }
 
         public void Unhide()

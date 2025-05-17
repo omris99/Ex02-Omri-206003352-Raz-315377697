@@ -19,7 +19,7 @@ namespace Ex02
             bool isPerfectGuess;
 
             guess.UserGuess = i_UserInputGuess;
-            guess.GuessFeedBack = SecretWord.CompareGuessToSecretWord(i_UserInputGuess, out isPerfectGuess);
+            guess.FeedBack = SecretWord.CompareGuessToSecretWord(i_UserInputGuess, out isPerfectGuess);
             guess.IsPerfectGuess = isPerfectGuess;
 
             return guess;
