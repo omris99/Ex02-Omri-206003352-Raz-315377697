@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,10 +11,15 @@ namespace Ex02
     {
         private readonly int r_TableRightSideWidth = 9;
         private readonly int r_TableLeftSideWidth = 8;
-        private const int k_BoardResultSide = 0;
-        private const int k_BoardPinsSide = 1;
+        private readonly String r_BoardLeftSideHeader = "Pins:";
+        private readonly String r_BoardRightSideHeader = "Result:";
         public SecretWord m_SecretWord = new SecretWord();
         private List<Guess> m_GuessHistoryToViewOnBoard = new List<Guess>();
+        private enum eBoardSide
+        {
+            Left,
+            Right
+        };
 
         public int CountOfGuessRowsOnBoard { get; set; }
 
@@ -29,8 +35,8 @@ namespace Ex02
 
             ConsoleUtils.Screen.Clear();
             Console.WriteLine($"Current board status:{Environment.NewLine}");
-            printBoardRow("Pins:", "Result:");
-            printBoardRow(styleStringBeforeDisplay(m_SecretWord.Word, k_BoardPinsSide));
+            printBoardRow(r_BoardLeftSideHeader, r_BoardRightSideHeader);
+            printBoardRow(styleStringBeforeDisplay(m_SecretWord.Word, eBoardSide.Left));
             for (int i = 0; i < countOfGuessesMadeSoFar; i++)
             {
                 Guess currentGuess = m_GuessHistoryToViewOnBoard[i];
@@ -80,11 +86,11 @@ namespace Ex02
             Console.WriteLine("¦");
         }
 
-        private String styleStringBeforeDisplay(String i_StringToStyle, int i_StringContent)
+        private String styleStringBeforeDisplay(String i_StringToStyle, eBoardSide i_DesiredBoardSideToDisplayString)
         {
             StringBuilder desingedString = new StringBuilder();
 
-            if (i_StringContent == k_BoardPinsSide)
+            if (i_DesiredBoardSideToDisplayString == eBoardSide.Left)
             {
                 foreach (char letter in i_StringToStyle)
                 {
@@ -92,7 +98,7 @@ namespace Ex02
                     desingedString.Append(letter);
                 }
             }
-            else if (i_StringContent == k_BoardResultSide)
+            else if (i_DesiredBoardSideToDisplayString == eBoardSide.Right)
             {
                 foreach (char letter in i_StringToStyle)
                 {
@@ -108,9 +114,9 @@ namespace Ex02
             Guess desginedGuess = new Guess();
 
             desginedGuess.UserGuess = styleStringBeforeDisplay
-                (i_Guess.UserGuess, k_BoardPinsSide);
+                (i_Guess.UserGuess, eBoardSide.Left);
             desginedGuess.GuessFeedBack = styleStringBeforeDisplay
-                (i_Guess.GuessFeedBack, k_BoardResultSide);
+                (i_Guess.GuessFeedBack, eBoardSide.Right);
 
             return desginedGuess;
         }
